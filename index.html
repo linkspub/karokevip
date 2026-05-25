@@ -748,7 +748,7 @@ function openPlayer() {
   showNotif('📺 Layar 2 dibuka — siap memutar');
 }
 
-/* ---- Messages from player window ---- */
+/* ---- Messages from Layar 2 (mirror only — preview player is master) ---- */
 window.addEventListener('message', e => {
   if (isRemote || isScreen2) return;
   const d = e.data;
@@ -756,15 +756,24 @@ window.addEventListener('message', e => {
     playerReady = true;
     try { playerWindow.postMessage({ type: 'volume', val: volVal }, '*'); } catch(ex) {}
     if (muteMode) try { playerWindow.postMessage({ type: 'mute', val: true }, '*'); } catch(ex) {}
-    if (pendingVideoId) { try { playerWindow.postMessage({ type: 'play', id: pendingVideoId }, '*'); } catch(ex) {} pendingVideoId = null; }
+    /* Send current playing song and seek to preview player's position */
+    const curSong = playlist[currentIndex];
+    if (curSong) {
+      try { playerWindow.postMessage({ type: 'play', id: curSong.id }, '*'); } catch(ex) {}
+      /* After Layar 2 loads the video, seek it to match preview player */
+      setTimeout(() => {
+        if (previewYTReady && previewYTPlayer && playerWindow && !playerWindow.closed) {
+          try {
+            const cur = previewYTPlayer.getCurrentTime();
+            playerWindow.postMessage({ type: 'seek', val: cur }, '*');
+            if (!isPlaying) playerWindow.postMessage({ type: 'pause' }, '*');
+          } catch(ex) {}
+        }
+      }, 2500);
+    }
     return;
   }
-  if (d?.type === 'ended') { songEnded(); return; }
-  if (d?.type === 'progress') { updateProgress(d.current, d.duration); return; }
-  if (d?.type === 'statechange') {
-    if (d.state === 1) { isPlaying = true; updatePlayBtn(); startProgressTimer(); }
-    else if (d.state === 2) { isPlaying = false; updatePlayBtn(); stopProgressTimer(); }
-  }
+  /* 'ended' from Layar 2 is ignored — preview player's onStateChange handles it */
 });
 
 /* ---- Play / Pause ---- */
@@ -778,14 +787,18 @@ function togglePlayPause() {
 }
 function playSelected() {
   if (!playlist.length) { showNotif('⚠ Tidak ada lagu dalam antrian'); return; }
-  const s = playlist[currentIndex]; pendingVideoId = s.id;
-  if (!playerWindow || playerWindow.closed) openPlayer();
-  else if (playerReady) { try { playerWindow.postMessage({ type: 'play', id: s.id }, '*'); } catch(err) {} pendingVideoId = null; }
+  const s = playlist[currentIndex];
+  /* PRIMARY: load in preview player (master) */
   if (previewYTReady && previewYTPlayer) {
     try { previewYTPlayer.loadVideoById(s.id); } catch(e) {}
     document.getElementById('previewPlayerDiv').style.display = 'block';
     document.getElementById('previewThumbEmpty').style.display = 'none';
+  } else {
+    pendingVideoId = s.id; /* queued — loaded when previewYTPlayer.onReady fires */
   }
+  /* MIRROR: open/send to Layar 2 */
+  if (!playerWindow || playerWindow.closed) openPlayer();
+  else if (playerReady) { try { playerWindow.postMessage({ type: 'play', id: s.id }, '*'); } catch(err) {} }
   isPlaying = true; updatePlayBtn(); startProgressTimer(); updatePreview(s); renderSongRows(); broadcastState();
 }
 function pauseVideo() {
@@ -844,13 +857,6 @@ function updateProgress(cur, dur) {
   document.getElementById('tcElapsed').textContent = fmtLong(cur);
   document.getElementById('tcTotal').textContent = fmtLong(dur);
   broadcastProgress(cur, dur);
-  /* Sync preview player — seek if drift > 2 seconds */
-  if (previewYTReady && previewYTPlayer && isPlaying) {
-    try {
-      const previewCur = previewYTPlayer.getCurrentTime();
-      if (Math.abs(previewCur - cur) > 2) previewYTPlayer.seekTo(cur, true);
-    } catch(e) {}
-  }
 }
 function fmtLong(s) {
   s = Math.floor(s || 0);
@@ -1244,16 +1250,50 @@ var previewYTPlayer, previewYTReady = false;
 
 function onYouTubeIframeAPIReady() {
   if (!isScreen2 && !isRemote) {
-    /* Preview player inside console Song Preview panel */
+    /* Preview player — MASTER player. Layar 2 mirrors this. */
     previewYTPlayer = new YT.Player('previewPlayerDiv', {
       width: '100%', height: '120',
       videoId: '',
-      playerVars: { autoplay: 0, controls: 0, rel: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, enablejsapi: 1 },
+      playerVars: { autoplay: 1, controls: 0, rel: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, enablejsapi: 1 },
       events: {
         onReady: function(e) {
           previewYTReady = true;
           e.target.setVolume(volVal);
           if (muteMode) e.target.mute();
+          /* Load any video that was queued before player was ready */
+          if (pendingVideoId) {
+            e.target.loadVideoById(pendingVideoId);
+            document.getElementById('previewPlayerDiv').style.display = 'block';
+            document.getElementById('previewThumbEmpty').style.display = 'none';
+            if (playerWindow && !playerWindow.closed && playerReady)
+              try { playerWindow.postMessage({ type: 'play', id: pendingVideoId }, '*'); } catch(ex) {}
+            pendingVideoId = null;
+          }
+        },
+        onStateChange: function(e) {
+          if (e.data === 1) { /* playing */
+            isPlaying = true; updatePlayBtn();
+            /* Drive progress + sync Layar 2 every second */
+            clearInterval(window._previewProgTimer);
+            window._previewProgTimer = setInterval(() => {
+              if (!previewYTReady || !previewYTPlayer) return;
+              try {
+                const cur = previewYTPlayer.getCurrentTime();
+                const dur = previewYTPlayer.getDuration();
+                if (dur > 0) { updateProgress(cur, dur); elapsedSeconds = Math.floor(cur); }
+                /* Send position to Layar 2 — it will seek if drift > 2 s */
+                if (playerWindow && !playerWindow.closed)
+                  playerWindow.postMessage({ type: 'syncPos', val: cur }, '*');
+              } catch(ex) {}
+            }, 1000);
+          } else if (e.data === 2) { /* paused */
+            isPlaying = false; updatePlayBtn();
+            clearInterval(window._previewProgTimer);
+          } else if (e.data === 0) { /* ended */
+            isPlaying = false; updatePlayBtn();
+            clearInterval(window._previewProgTimer);
+            songEnded();
+          }
         }
       }
     });
@@ -1298,6 +1338,10 @@ if (isScreen2) {
       if (d.type === 'volume' && ytPlayer) ytPlayer.setVolume(d.val);
       if (d.type === 'mute' && ytPlayer) { d.val ? ytPlayer.mute() : ytPlayer.unMute(); }
       if (d.type === 'seek' && ytPlayer) ytPlayer.seekTo(d.val, true);
+      /* syncPos: keep Layar 2 in sync with preview player (master) */
+      if (d.type === 'syncPos' && ytPlayer && ytReady) {
+        try { const cur = ytPlayer.getCurrentTime(); if (Math.abs(cur - d.val) > 2) ytPlayer.seekTo(d.val, true); } catch(ex) {}
+      }
     } catch(err) {}
   });
   document.addEventListener('dblclick', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); });
