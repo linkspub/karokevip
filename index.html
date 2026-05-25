@@ -1410,4 +1410,20 @@ window.addEventListener('load', () => {
 
   if (isRemote && db) {
     /* Remote state listener */
-    db.ref('sta
+    db.ref('state').on('value', snap => {
+      const s = snap.val(); if (!s) return;
+      const cs = document.getElementById('r-connStatus');
+      if (cs) { cs.textContent = 'CONNECTED'; cs.classList.add('connected'); }
+      r_state = { ...r_state, ...s };
+      r_updateUI(s);
+    });
+    db.ref('.info/connected').on('value', snap => {
+      const el = document.getElementById('r-connStatus'); if (!el) return;
+      if (snap.val()) { el.textContent = 'CONNECTED'; el.classList.add('connected'); }
+      else { el.textContent = 'OFFLINE'; el.classList.remove('connected'); }
+    });
+  }
+});
+</script>
+</body>
+</html>
