@@ -380,7 +380,10 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
         <span>◀ SONG PREVIEW</span>
         <button class="preview-close" onclick="document.getElementById('previewPanel').style.display='none'">✕</button>
       </div>
-      <div class="preview-thumb" id="previewThumb">🎵</div>
+      <div class="preview-thumb" id="previewThumb" style="position:relative;overflow:hidden;padding:0;">
+        <div id="previewThumbEmpty" style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,0.15);">🎵</div>
+        <div id="previewPlayerDiv" style="position:absolute;top:0;left:0;width:100%;height:120px;display:none;pointer-events:none;"></div>
+      </div>
       <div class="preview-info" id="previewInfo" style="color:rgba(255,255,255,0.3);font-style:italic;">Pilih lagu untuk preview</div>
       <div class="preview-mini-bar">
         <button class="mini-btn" id="miniPlayPauseBtn" onclick="togglePlayPause()" title="Play / Pause">▶</button>
@@ -693,7 +696,11 @@ if (!isRemote && !isScreen2 && db) {
     switch (cmd.action) {
       case 'play':
         if (!playerWindow || playerWindow.closed) openPlayer();
-        setTimeout(() => playSelected(), 300); break;
+        setTimeout(() => {
+          if (isPlaying) return;
+          if (playerReady && playlist.length) resumeVideo();
+          else playSelected();
+        }, 300); break;
       case 'pause': pauseVideo(); break;
       case 'next': nextSong(); break;
       case 'prev':
@@ -774,15 +781,23 @@ function playSelected() {
   const s = playlist[currentIndex]; pendingVideoId = s.id;
   if (!playerWindow || playerWindow.closed) openPlayer();
   else if (playerReady) { try { playerWindow.postMessage({ type: 'play', id: s.id }, '*'); } catch(err) {} pendingVideoId = null; }
+  if (previewYTReady && previewYTPlayer) {
+    try { previewYTPlayer.loadVideoById(s.id); } catch(e) {}
+    document.getElementById('previewPlayerDiv').style.display = 'block';
+    document.getElementById('previewThumbEmpty').style.display = 'none';
+  }
   isPlaying = true; updatePlayBtn(); startProgressTimer(); updatePreview(s); renderSongRows(); broadcastState();
 }
 function pauseVideo() {
-  isPlaying = false; updatePlayBtn(); stopProgressTimer();
+  isPlaying = false; updatePlayBtn();
+  clearInterval(elapsedTimer); elapsedTimer = null;
   try { playerWindow?.postMessage({ type: 'pause' }, '*'); } catch(e) {}
+  try { if (previewYTReady && previewYTPlayer) previewYTPlayer.pauseVideo(); } catch(e) {}
   broadcastState();
 }
 function resumeVideo() {
   try { playerWindow?.postMessage({ type: 'resume' }, '*'); } catch(e) {}
+  try { if (previewYTReady && previewYTPlayer) previewYTPlayer.playVideo(); } catch(e) {}
   isPlaying = true; updatePlayBtn(); startProgressTimer(); showNotif('▶ Melanjutkan pemutaran'); broadcastState();
 }
 function nextSong() {
@@ -794,6 +809,11 @@ function nextSong() {
 function clearPlaylist() {
   playlist = []; currentIndex = 0; isPlaying = false; updatePlayBtn(); stopProgressTimer();
   try { playerWindow?.postMessage({ type: 'pause' }, '*'); } catch(e) {}
+  try { if (previewYTReady && previewYTPlayer) previewYTPlayer.stopVideo(); } catch(e) {}
+  const playerDiv = document.getElementById('previewPlayerDiv');
+  const emptyEl = document.getElementById('previewThumbEmpty');
+  if (playerDiv) playerDiv.style.display = 'none';
+  if (emptyEl) emptyEl.style.display = 'flex';
   renderSongRows(); updatePreview(null); renderQueueModal(); showNotif('🗑 Semua lagu dihapus dari antrian');
 }
 function songEnded() {
@@ -824,6 +844,13 @@ function updateProgress(cur, dur) {
   document.getElementById('tcElapsed').textContent = fmtLong(cur);
   document.getElementById('tcTotal').textContent = fmtLong(dur);
   broadcastProgress(cur, dur);
+  /* Sync preview player — seek if drift > 2 seconds */
+  if (previewYTReady && previewYTPlayer && isPlaying) {
+    try {
+      const previewCur = previewYTPlayer.getCurrentTime();
+      if (Math.abs(previewCur - cur) > 2) previewYTPlayer.seekTo(cur, true);
+    } catch(e) {}
+  }
 }
 function fmtLong(s) {
   s = Math.floor(s || 0);
@@ -858,6 +885,7 @@ function changeVol(d) {
   volVal = Math.max(0, Math.min(100, volVal + d));
   document.getElementById('volVal').textContent = volVal;
   try { playerWindow?.postMessage({ type: 'volume', val: volVal }, '*'); } catch(e) {}
+  try { if (previewYTReady && previewYTPlayer) previewYTPlayer.setVolume(volVal); } catch(e) {}
   showNotif('🔊 Volume: ' + volVal + '%'); broadcastState();
 }
 function changePitch(d) {
@@ -878,6 +906,7 @@ function toggleMute(btn) {
   muteMode = !muteMode; btn.classList.toggle('active-state', muteMode);
   document.getElementById('muteBtnIcon').textContent = muteMode ? '🔇' : '🔊';
   try { playerWindow?.postMessage({ type: 'mute', val: muteMode }, '*'); } catch(e) {}
+  try { if (previewYTReady && previewYTPlayer) { muteMode ? previewYTPlayer.mute() : previewYTPlayer.unMute(); } } catch(e) {}
   showNotif(muteMode ? '🔇 Mute ON' : '🔊 Mute OFF');
 }
 function toggleVocal(btn) { vocalMode = !vocalMode; btn.classList.toggle('active-state', vocalMode); showNotif(vocalMode ? '🎤 Vocal ON' : '🎤 Vocal OFF (Instrumental)'); }
@@ -920,11 +949,16 @@ function renderSongRows() {
 
 /* ---- Preview panel ---- */
 function updatePreview(song) {
-  const thumbEl = document.getElementById('previewThumb');
   const infoEl = document.getElementById('previewInfo');
-  if (!thumbEl) return;
-  if (!song) { thumbEl.innerHTML = '🎵'; infoEl.textContent = 'Pilih lagu untuk preview'; infoEl.style.color = 'rgba(255,255,255,0.3)'; return; }
-  thumbEl.innerHTML = song.thumb ? `<img src="${song.thumb}" alt="">` : '🎵';
+  const emptyEl = document.getElementById('previewThumbEmpty');
+  const playerDiv = document.getElementById('previewPlayerDiv');
+  if (!infoEl) return;
+  if (!song) {
+    if (emptyEl) emptyEl.style.display = 'flex';
+    if (playerDiv) playerDiv.style.display = 'none';
+    infoEl.textContent = 'Pilih lagu untuk preview'; infoEl.style.color = 'rgba(255,255,255,0.3)';
+    return;
+  }
   infoEl.textContent = song.title; infoEl.style.color = '#ddd';
 }
 function togglePreviewPanel() {
@@ -1206,8 +1240,25 @@ function r_addSong(item) {
    SCREEN 2 — YouTube Player
    ============================================================ */
 var ytPlayer, ytProgTimer, ytReady = false, ytPendingId = null;
+var previewYTPlayer, previewYTReady = false;
 
 function onYouTubeIframeAPIReady() {
+  if (!isScreen2 && !isRemote) {
+    /* Preview player inside console Song Preview panel */
+    previewYTPlayer = new YT.Player('previewPlayerDiv', {
+      width: '100%', height: '120',
+      videoId: '',
+      playerVars: { autoplay: 0, controls: 0, rel: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, enablejsapi: 1 },
+      events: {
+        onReady: function(e) {
+          previewYTReady = true;
+          e.target.setVolume(volVal);
+          if (muteMode) e.target.mute();
+        }
+      }
+    });
+    return;
+  }
   if (!isScreen2) return;
   ytPlayer = new YT.Player('player', {
     width: '100%', height: '100%', videoId: '',
@@ -1267,6 +1318,10 @@ window.addEventListener('load', () => {
     buildVK();
     document.getElementById('searchInput').addEventListener('click', () => document.getElementById('searchInput').select?.());
     document.getElementById('openPlayerBtn').addEventListener('click', openPlayer);
+    /* Load YouTube IFrame API for preview player */
+    const ytScript = document.createElement('script');
+    ytScript.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(ytScript);
   }
 
   if (isRemote && db) {
