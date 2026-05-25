@@ -1379,4 +1379,44 @@ if (isScreen2) {
   });
   document.addEventListener('dblclick', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen(); });
-  const ytScript =
+  const ytScript = document.createElement('script');
+  ytScript.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(ytScript);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('load', () => {
+  if (!isRemote && !isScreen2) {
+    /* Console QR codes */
+    try { new QRCode(document.getElementById('qrcode'), { text: CONTROL_URL, width:44, height:44, colorDark:'#000', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.H }); } catch(e) {}
+    try { new QRCode(document.getElementById('qrcodeLarge'), { text: CONTROL_URL, width:220, height:220, colorDark:'#000', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.H }); } catch(e) {}
+    buildVK();
+    document.getElementById('searchInput').addEventListener('click', () => document.getElementById('searchInput').select?.());
+    document.getElementById('openPlayerBtn').addEventListener('click', openPlayer);
+    /* Load YouTube IFrame API for preview player */
+    const ytScript = document.createElement('script');
+    ytScript.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(ytScript);
+  }
+
+  if (isRemote && db) {
+    /* Remote state listener */
+    db.ref('state').on('value', snap => {
+      const s = snap.val(); if (!s) return;
+      const cs = document.getElementById('r-connStatus');
+      if (cs) { cs.textContent = 'CONNECTED'; cs.classList.add('connected'); }
+      r_state = { ...r_state, ...s };
+      r_updateUI(s);
+    });
+    db.ref('.info/connected').on('value', snap => {
+      const el = document.getElementById('r-connStatus'); if (!el) return;
+      if (snap.val()) { el.textContent = 'CONNECTED'; el.classList.add('connected'); }
+      else { el.textContent = 'OFFLINE'; el.classList.remove('connected'); }
+    });
+  }
+});
+</script>
+</body>
+</html>
