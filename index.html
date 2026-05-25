@@ -650,6 +650,7 @@ const PLAYER_URL  = location.href.split('?')[0] + '?screen2=true';
    ============================================================ */
 let playlist = [], currentIndex = 0;
 let playerWindow = null, playerReady = false, pendingVideoId = null;
+let _newVideoTimestamp = 0; /* used to block position-sync during first 60 s of a new video */
 let currentCatFilter = 'all';
 let volVal = 80, pitchVal = 0;
 let repeatMode = false, muteMode = false, vocalMode = true;
@@ -756,20 +757,26 @@ window.addEventListener('message', e => {
     playerReady = true;
     try { playerWindow.postMessage({ type: 'volume', val: volVal }, '*'); } catch(ex) {}
     if (muteMode) try { playerWindow.postMessage({ type: 'mute', val: true }, '*'); } catch(ex) {}
-    /* Send current playing song and seek to preview player's position */
+    /* Send current playing song — cue then seek to exact preview position */
     const curSong = playlist[currentIndex];
     if (curSong) {
-      try { playerWindow.postMessage({ type: 'play', id: curSong.id }, '*'); } catch(ex) {}
-      /* After Layar 2 loads the video, seek it to match preview player */
-      setTimeout(() => {
-        if (previewYTReady && previewYTPlayer && playerWindow && !playerWindow.closed) {
-          try {
-            const cur = previewYTPlayer.getCurrentTime();
-            playerWindow.postMessage({ type: 'seek', val: cur }, '*');
-            if (!isPlaying) playerWindow.postMessage({ type: 'pause' }, '*');
-          } catch(ex) {}
-        }
-      }, 2500);
+      const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
+      if (videoAge < 5) {
+        /* New video just started — cue Layar 2 then start it via resume (already handled by _syncStartTimer) */
+        try { playerWindow.postMessage({ type: 'cue', id: curSong.id }, '*'); } catch(ex) {}
+      } else {
+        /* Video already in progress — load and seek to match preview player */
+        try { playerWindow.postMessage({ type: 'play', id: curSong.id }, '*'); } catch(ex) {}
+        setTimeout(() => {
+          if (previewYTReady && previewYTPlayer && playerWindow && !playerWindow.closed) {
+            try {
+              const cur = previewYTPlayer.getCurrentTime();
+              playerWindow.postMessage({ type: 'seek', val: cur }, '*');
+              if (!isPlaying) playerWindow.postMessage({ type: 'pause' }, '*');
+            } catch(ex) {}
+          }
+        }, 2500);
+      }
     }
     return;
   }
@@ -788,17 +795,30 @@ function togglePlayPause() {
 function playSelected() {
   if (!playlist.length) { showNotif('⚠ Tidak ada lagu dalam antrian'); return; }
   const s = playlist[currentIndex];
-  /* PRIMARY: load in preview player (master) */
+  _newVideoTimestamp = Date.now(); /* block position-sync for first 60 s */
+
+  /* Step 1 — CUE both players (load without auto-playing) */
   if (previewYTReady && previewYTPlayer) {
-    try { previewYTPlayer.loadVideoById(s.id); } catch(e) {}
+    try { previewYTPlayer.cueVideoById(s.id); } catch(e) {}
     document.getElementById('previewPlayerDiv').style.display = 'block';
     document.getElementById('previewThumbEmpty').style.display = 'none';
   } else {
-    pendingVideoId = s.id; /* queued — loaded when previewYTPlayer.onReady fires */
+    pendingVideoId = s.id; /* loaded when previewYTPlayer.onReady fires */
   }
-  /* MIRROR: open/send to Layar 2 */
   if (!playerWindow || playerWindow.closed) openPlayer();
-  else if (playerReady) { try { playerWindow.postMessage({ type: 'play', id: s.id }, '*'); } catch(err) {} }
+  else if (playerReady) {
+    /* Tell Layar 2 to also CUE (load but don't play yet) */
+    try { playerWindow.postMessage({ type: 'cue', id: s.id }, '*'); } catch(err) {}
+  }
+
+  /* Step 2 — Start BOTH simultaneously after 1.5 s buffer window */
+  clearTimeout(window._syncStartTimer);
+  window._syncStartTimer = setTimeout(() => {
+    try { if (previewYTReady && previewYTPlayer) previewYTPlayer.playVideo(); } catch(e) {}
+    try { if (playerWindow && !playerWindow.closed) playerWindow.postMessage({ type: 'resume' }, '*'); } catch(e) {}
+    showNotif('▶ Memutar: ' + (s.title?.substring(0, 30) || 'Lagu'));
+  }, 1500);
+
   isPlaying = true; updatePlayBtn(); startProgressTimer(); updatePreview(s); renderSongRows(); broadcastState();
 }
 function pauseVideo() {
@@ -1260,14 +1280,20 @@ function onYouTubeIframeAPIReady() {
           previewYTReady = true;
           e.target.setVolume(volVal);
           if (muteMode) e.target.mute();
-          /* Load any video that was queued before player was ready */
+          /* Load any video queued before player was ready — cue both then start together */
           if (pendingVideoId) {
-            e.target.loadVideoById(pendingVideoId);
+            const vid = pendingVideoId; pendingVideoId = null;
+            e.target.cueVideoById(vid);
             document.getElementById('previewPlayerDiv').style.display = 'block';
             document.getElementById('previewThumbEmpty').style.display = 'none';
             if (playerWindow && !playerWindow.closed && playerReady)
-              try { playerWindow.postMessage({ type: 'play', id: pendingVideoId }, '*'); } catch(ex) {}
-            pendingVideoId = null;
+              try { playerWindow.postMessage({ type: 'cue', id: vid }, '*'); } catch(ex) {}
+            /* Start both simultaneously */
+            clearTimeout(window._syncStartTimer);
+            window._syncStartTimer = setTimeout(() => {
+              try { e.target.playVideo(); } catch(ex) {}
+              try { if (playerWindow && !playerWindow.closed) playerWindow.postMessage({ type: 'resume' }, '*'); } catch(ex) {}
+            }, 1500);
           }
         },
         onStateChange: function(e) {
@@ -1281,8 +1307,9 @@ function onYouTubeIframeAPIReady() {
                 const cur = previewYTPlayer.getCurrentTime();
                 const dur = previewYTPlayer.getDuration();
                 if (dur > 0) { updateProgress(cur, dur); elapsedSeconds = Math.floor(cur); }
-                /* Send position to Layar 2 — it will seek if drift > 2 s */
-                if (playerWindow && !playerWindow.closed)
+                /* Only sync position AFTER 60 s from video start — prevents skipping ads/intro */
+                const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
+                if (videoAge > 60 && playerWindow && !playerWindow.closed)
                   playerWindow.postMessage({ type: 'syncPos', val: cur }, '*');
               } catch(ex) {}
             }, 1000);
@@ -1328,6 +1355,12 @@ if (isScreen2) {
   window.addEventListener('message', function(e) {
     try {
       const d = e.data; if (!d || !d.type) return;
+      if (d.type === 'cue') {
+        /* CUE: load without playing — waits for simultaneous 'resume' from console */
+        document.getElementById('s2-idleScreen').classList.add('hidden');
+        if (ytReady && ytPlayer) { ytPlayer.cueVideoById(d.id); document.documentElement.requestFullscreen().catch(() => {}); }
+        else ytPendingId = d.id;
+      }
       if (d.type === 'play') {
         document.getElementById('s2-idleScreen').classList.add('hidden');
         if (ytReady && ytPlayer) { ytPlayer.loadVideoById(d.id); document.documentElement.requestFullscreen().catch(() => {}); }
@@ -1346,44 +1379,4 @@ if (isScreen2) {
   });
   document.addEventListener('dblclick', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen(); });
-  const ytScript = document.createElement('script');
-  ytScript.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(ytScript);
-}
-
-/* ============================================================
-   INIT
-   ============================================================ */
-window.addEventListener('load', () => {
-  if (!isRemote && !isScreen2) {
-    /* Console QR codes */
-    try { new QRCode(document.getElementById('qrcode'), { text: CONTROL_URL, width:44, height:44, colorDark:'#000', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.H }); } catch(e) {}
-    try { new QRCode(document.getElementById('qrcodeLarge'), { text: CONTROL_URL, width:220, height:220, colorDark:'#000', colorLight:'#fff', correctLevel: QRCode.CorrectLevel.H }); } catch(e) {}
-    buildVK();
-    document.getElementById('searchInput').addEventListener('click', () => document.getElementById('searchInput').select?.());
-    document.getElementById('openPlayerBtn').addEventListener('click', openPlayer);
-    /* Load YouTube IFrame API for preview player */
-    const ytScript = document.createElement('script');
-    ytScript.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(ytScript);
-  }
-
-  if (isRemote && db) {
-    /* Remote state listener */
-    db.ref('state').on('value', snap => {
-      const s = snap.val(); if (!s) return;
-      const cs = document.getElementById('r-connStatus');
-      if (cs) { cs.textContent = 'CONNECTED'; cs.classList.add('connected'); }
-      r_state = { ...r_state, ...s };
-      r_updateUI(s);
-    });
-    db.ref('.info/connected').on('value', snap => {
-      const el = document.getElementById('r-connStatus'); if (!el) return;
-      if (snap.val()) { el.textContent = 'CONNECTED'; el.classList.add('connected'); }
-      else { el.textContent = 'OFFLINE'; el.classList.remove('connected'); }
-    });
-  }
-});
-</script>
-</body>
-</html>
+  const ytScript =
