@@ -30,41 +30,57 @@ body.console-mode::after{
   content:'';position:fixed;right:0;top:0;bottom:0;width:6px;
   background:linear-gradient(180deg,#f00,#ff7f00,#ff0,#0f0,#00f,#8b00ff,#f00);z-index:100;
 }
-.top-bar{display:flex;align-items:center;border-bottom:2px solid var(--green);flex-shrink:0;height:52px;background:#000;box-shadow:0 0 14px rgba(0,230,118,0.35);padding:0 8px;gap:6px;}
-.logo-box{display:flex;align-items:center;gap:6px;border:2px solid var(--green);border-radius:4px;padding:3px 10px;background:rgba(0,230,118,0.05);box-shadow:0 0 10px rgba(0,230,118,0.3);flex-shrink:0;min-width:130px;}
-.logo-img{font-size:22px;}
-.logo-text{font-family:'Orbitron',sans-serif;font-size:15px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,230,118,0.8);line-height:1.1;letter-spacing:1px;}
-.logo-sub{font-size:9px;color:rgba(0,230,118,0.6);font-weight:400;letter-spacing:2px;}
+.top-bar{display:flex;align-items:center;border-bottom:2px solid var(--green);flex-shrink:0;height:62px;background:#000;box-shadow:0 0 14px rgba(0,230,118,0.35);padding:0 8px;gap:6px;}
+.logo-box{display:flex;align-items:center;gap:8px;border:2px solid var(--green);border-radius:12px;padding:4px 12px;background:rgba(0,230,118,0.05);box-shadow:0 0 10px rgba(0,230,118,0.3);flex-shrink:0;min-width:140px;}
+.logo-img{font-size:26px;}
+.logo-text{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:var(--green);text-shadow:0 0 10px rgba(0,230,118,0.8);line-height:1.1;letter-spacing:1px;}
+.logo-sub{font-size:10px;color:rgba(0,230,118,0.6);font-weight:400;letter-spacing:2px;}
 .cat-tabs{display:flex;flex:1;height:100%;align-items:stretch;}
-.cat-tab{flex:1;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;color:var(--text2);background:transparent;border-left:1px solid rgba(0,230,118,0.2);border-right:1px solid rgba(0,230,118,0.2);transition:0.15s;position:relative;}
+.cat-tab{flex:0 0 auto;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:700;letter-spacing:1px;color:var(--text2);background:transparent;border-left:1px solid rgba(0,230,118,0.2);border-right:1px solid rgba(0,230,118,0.2);transition:0.15s;position:relative;padding:0 14px;}
 .cat-tab:hover{background:rgba(0,230,118,0.1);color:#fff;}
 .cat-tab.active{background:linear-gradient(180deg,rgba(0,230,118,0.25),rgba(0,230,118,0.08));color:#fff;border-bottom:3px solid var(--green);text-shadow:0 0 8px rgba(0,230,118,0.6);}
+/* ---- TOP BANNER ---- */
+#topBanner{flex:1;height:100%;overflow:hidden;position:relative;border-left:1px solid rgba(0,230,118,0.25);border-right:1px solid rgba(0,230,118,0.25);background:#000;}
+#bannerSlideshow{width:100%;height:100%;position:relative;overflow:hidden;}
+.b-slide{position:absolute;inset:0;opacity:0;transition:opacity 0.9s ease;display:flex;align-items:center;justify-content:center;}
+.b-slide.active{opacity:1;}
+.b-slide img{width:100%;height:100%;object-fit:cover;}
+.b-slide-empty{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(0,230,118,0.3);font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:1px;}
+#bannerMarquee{width:100%;height:100%;display:flex;align-items:center;overflow:hidden;background:rgba(0,0,0,0.6);}
+.marquee-track{display:flex;align-items:center;white-space:nowrap;will-change:transform;animation:marqueeRun 25s linear infinite;}
+.marquee-track.speed-slow{animation-duration:40s;}
+.marquee-track.speed-fast{animation-duration:12s;}
+@keyframes marqueeRun{0%{transform:translateX(100vw);}100%{transform:translateX(-100%);}}
+.marquee-text{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1.5px;padding-right:120px;}
 .scan-me-btn{color:#00e676!important;letter-spacing:2px!important;font-weight:900!important;animation:scanPulse 2s ease-in-out infinite;}
 .scan-me-btn.active{background:linear-gradient(180deg,rgba(0,230,118,0.25),rgba(0,230,118,0.08));border-bottom:3px solid var(--green);animation:none;}
+.promo-btn{color:var(--yellow)!important;letter-spacing:2px!important;font-weight:900!important;animation:promoPulse 2.5s ease-in-out infinite;}
+.promo-btn.active{background:linear-gradient(180deg,rgba(255,214,0,0.22),rgba(255,214,0,0.06));border-bottom:3px solid var(--yellow);animation:none;}
+@keyframes promoPulse{0%,100%{color:var(--yellow)!important;text-shadow:0 0 8px rgba(255,214,0,0.6);}50%{color:#fff!important;text-shadow:none;}}
 @keyframes scanPulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
-.room-info{display:flex;align-items:center;gap:8px;flex-shrink:0;border:1px solid rgba(0,230,118,0.4);border-radius:4px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;color:var(--green);background:rgba(0,230,118,0.05);text-shadow:0 0 8px rgba(0,230,118,0.5);}
+.room-info{display:flex;align-items:center;gap:8px;flex-shrink:0;border:1px solid rgba(0,230,118,0.4);border-radius:12px;padding:4px 12px;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;color:var(--green);background:rgba(0,230,118,0.05);text-shadow:0 0 8px rgba(0,230,118,0.5);}
 .room-dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);animation:pulse-dot 1.5s ease-in-out infinite;}
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.btn-open-player{background:linear-gradient(135deg,rgba(0,230,118,0.2),rgba(0,200,83,0.15));border:1px solid var(--green);color:var(--green);padding:5px 14px;border-radius:4px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;transition:0.2s;white-space:nowrap;text-shadow:0 0 8px rgba(0,230,118,0.5);box-shadow:0 0 8px rgba(0,230,118,0.2);}
+.btn-open-player{background:linear-gradient(135deg,rgba(0,230,118,0.2),rgba(0,200,83,0.15));border:1px solid var(--green);color:var(--green);padding:5px 14px;border-radius:12px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;letter-spacing:1px;transition:0.2s;white-space:nowrap;text-shadow:0 0 8px rgba(0,230,118,0.5);box-shadow:0 0 8px rgba(0,230,118,0.2);}
 .btn-open-player:hover{background:rgba(0,230,118,0.3);box-shadow:0 0 14px rgba(0,230,118,0.5);}
-.main{display:flex;flex:1;overflow:hidden;padding:6px;gap:6px;}
-.left-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;}
-.song-list-panel{flex:1;min-height:0;border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);display:flex;overflow:hidden;}
+.main{display:flex;flex:1;overflow:hidden;padding:4px;gap:4px;}
+.left-col{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.song-list-panel{flex:1;min-height:0;border:2px solid var(--green);border-radius:12px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);display:flex;overflow:hidden;}
 .song-table-wrap{flex:1;overflow:hidden;display:flex;flex-direction:column;}
-.song-table-header{display:grid;grid-template-columns:44px 1fr 1fr;background:rgba(0,230,118,0.12);border-bottom:1px solid rgba(0,230,118,0.4);padding:4px 12px;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-shadow:0 0 6px rgba(0,230,118,0.5);flex-shrink:0;}
+.song-table-header{display:grid;grid-template-columns:56px 1fr 1fr;background:rgba(0,230,118,0.12);border-bottom:1px solid rgba(0,230,118,0.4);padding:7px 14px;font-size:13px;font-weight:700;letter-spacing:1.5px;color:var(--green);text-shadow:0 0 6px rgba(0,230,118,0.5);flex-shrink:0;}
 .song-rows{flex:1;overflow-y:auto;}
 .song-rows::-webkit-scrollbar{width:0;}
-.song-row{display:grid;grid-template-columns:44px 1fr 1fr;padding:4px 12px;cursor:pointer;border-bottom:1px solid rgba(0,230,118,0.07);transition:0.12s;align-items:center;gap:4px;}
-.song-thumb-cell{width:40px;height:28px;object-fit:cover;border-radius:2px;background:#111;display:block;flex-shrink:0;}
+.song-row{display:grid;grid-template-columns:56px 1fr 1fr;padding:7px 14px;cursor:pointer;border-bottom:1px solid rgba(0,230,118,0.07);transition:0.12s;align-items:center;gap:4px;}
+.song-thumb-cell{width:52px;height:36px;object-fit:cover;border-radius:8px;background:#111;display:block;flex-shrink:0;}
 .song-row:hover{background:rgba(0,230,118,0.1);}
 .song-row.playing{background:rgba(0,230,118,0.18);box-shadow:inset 0 0 0 1px rgba(0,230,118,0.4);}
 .song-row.now-play{background:rgba(0,230,118,0.22);animation:rowPulse 2s ease-in-out infinite;}
 @keyframes rowPulse{0%,100%{background:rgba(0,230,118,0.22);}50%{background:rgba(0,230,118,0.1);}}
-.song-title-cell{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:12px;color:#fff;}
+.song-title-cell{font-size:16px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:12px;color:#fff;}
 .song-row:hover .song-title-cell,.song-row.playing .song-title-cell{color:var(--green);text-shadow:0 0 6px rgba(0,230,118,0.5);}
-.song-artist-cell{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#aaa;}
-.scroll-arrows{display:flex;flex-direction:column;width:36px;flex-shrink:0;border-left:1px solid rgba(0,230,118,0.3);background:rgba(0,230,118,0.04);justify-content:space-between;}
-.scroll-btn{flex:1;border:none;cursor:pointer;background:transparent;color:var(--green);font-size:16px;display:flex;align-items:center;justify-content:center;transition:0.15s;max-height:40px;}
+.song-artist-cell{font-size:15px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#aaa;}
+.scroll-arrows{display:flex;flex-direction:column;width:48px;flex-shrink:0;border-left:1px solid rgba(0,230,118,0.3);background:rgba(0,230,118,0.04);justify-content:space-between;}
+.scroll-btn{flex:1;border:none;cursor:pointer;background:transparent;color:var(--green);font-size:20px;display:flex;align-items:center;justify-content:center;transition:0.15s;max-height:52px;}
 .scroll-btn:hover{background:rgba(0,230,118,0.15);}
 .scroll-btn.top-btn{border-bottom:1px solid rgba(0,230,118,0.2);}
 .scroll-btn.bot-btn{border-top:1px solid rgba(0,230,118,0.2);}
@@ -73,10 +89,28 @@ body.console-mode::after{
 .qr-scan-overlay.visible{display:flex;}
 .qr-scan-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;font-weight:700;color:var(--green);text-transform:uppercase;text-shadow:0 0 12px rgba(0,230,118,0.7);}
 .qr-scan-sub{font-size:11px;color:rgba(0,230,118,0.5);letter-spacing:2px;text-align:center;line-height:1.8;}
-.qr-scan-frame{padding:12px;background:#fff;border-radius:8px;box-shadow:0 0 30px rgba(0,230,118,0.5),0 0 60px rgba(0,230,118,0.2);}
+.qr-scan-frame{padding:12px;background:#fff;border-radius:16px;box-shadow:0 0 30px rgba(0,230,118,0.5),0 0 60px rgba(0,230,118,0.2);}
 #qrcodeLarge canvas,#qrcodeLarge img{width:220px!important;height:220px!important;display:block;}
-.qr-scan-close{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:6px 20px;border-radius:4px;cursor:pointer;transition:0.15s;}
+.qr-scan-close{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:6px 20px;border-radius:20px;cursor:pointer;transition:0.15s;}
 .qr-scan-close:hover{background:rgba(0,230,118,0.25);}
+/* ---- PROMO PHOTO OVERLAY ---- */
+.promo-overlay{display:none;position:absolute;inset:0;background:radial-gradient(ellipse at center,#1a1200 0%,#000 80%);z-index:20;flex-direction:column;align-items:center;justify-content:space-between;padding:16px 12px 12px;}
+.promo-overlay.visible{display:flex;}
+.promo-ov-title{font-family:'Orbitron',sans-serif;font-size:13px;letter-spacing:3px;font-weight:700;color:var(--yellow);text-transform:uppercase;text-shadow:0 0 14px rgba(255,214,0,0.8);flex-shrink:0;}
+.promo-img-wrap{flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;min-height:0;margin:12px 0;}
+.promo-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:14px;box-shadow:0 0 30px rgba(255,214,0,0.3),0 0 60px rgba(255,214,0,0.1);display:block;}
+.promo-img-empty{width:100%;height:200px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:rgba(255,214,0,0.3);font-size:40px;font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:1px;}
+.promo-nav-row{display:flex;align-items:center;gap:14px;flex-shrink:0;}
+.promo-nav-btn{width:52px;height:52px;border-radius:50%;border:2px solid rgba(255,214,0,0.5);background:rgba(255,214,0,0.08);color:var(--yellow);font-size:22px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.15s;font-family:'Rajdhani',sans-serif;}
+.promo-nav-btn:hover{background:rgba(255,214,0,0.2);box-shadow:0 0 12px rgba(255,214,0,0.4);}
+.promo-nav-btn:active{transform:scale(0.9);}
+.promo-counter{font-family:'Orbitron',sans-serif;font-size:12px;color:rgba(255,214,0,0.7);letter-spacing:2px;min-width:60px;text-align:center;}
+.promo-dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:260px;}
+.promo-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,214,0,0.22);transition:0.2s;cursor:pointer;}
+.promo-dot.active{background:var(--yellow);box-shadow:0 0 6px rgba(255,214,0,0.8);transform:scale(1.3);}
+.promo-footer{display:flex;align-items:center;gap:12px;flex-shrink:0;margin-top:8px;}
+.promo-close{background:rgba(255,214,0,0.1);border:1px solid rgba(255,214,0,0.4);color:var(--yellow);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;padding:6px 20px;border-radius:20px;cursor:pointer;transition:0.15s;}
+.promo-close:hover{background:rgba(255,214,0,0.25);}
 .search-overlay{display:none;position:absolute;inset:0;background:#000;z-index:10;flex-direction:column;overflow:hidden;}
 .search-overlay.visible{display:flex;}
 .search-overlay-header{display:flex;align-items:center;justify-content:space-between;padding:5px 10px;background:rgba(0,230,118,0.08);border-bottom:1px solid rgba(0,230,118,0.3);flex-shrink:0;font-size:11px;font-weight:700;letter-spacing:1.5px;color:var(--green);}
@@ -84,9 +118,9 @@ body.console-mode::after{
 .search-overlay-close:hover{color:#ff5252;}
 .search-overlay-list{flex:1;overflow-y:auto;padding:8px;}
 .search-overlay-list::-webkit-scrollbar{width:4px;}
-.search-overlay-list::-webkit-scrollbar-thumb{background:rgba(0,230,118,0.3);border-radius:2px;}
+.search-overlay-list::-webkit-scrollbar-thumb{background:rgba(0,230,118,0.3);border-radius:6px;}
 .search-results-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;}
-.sr-item{display:flex;flex-direction:column;cursor:pointer;border:1px solid rgba(0,230,118,0.15);border-radius:4px;background:#0a0a0a;overflow:hidden;transition:0.12s;position:relative;}
+.sr-item{display:flex;flex-direction:column;cursor:pointer;border:1px solid rgba(0,230,118,0.15);border-radius:12px;background:#0a0a0a;overflow:hidden;transition:0.12s;position:relative;}
 .sr-item:hover{background:rgba(0,230,118,0.08);border-color:rgba(0,230,118,0.4);}
 .sr-thumb{width:100%;height:100px;object-fit:cover;background:#111;display:block;}
 .sr-info{flex:1;min-width:0;padding:6px 8px;}
@@ -94,16 +128,16 @@ body.console-mode::after{
 .sr-channel{font-size:9px;color:#888;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .sr-add{position:absolute;top:4px;right:4px;background:rgba(0,0,0,0.7);border:1px solid rgba(0,230,118,0.5);color:var(--green);width:26px;height:26px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:0.15s;box-shadow:0 0 6px rgba(0,230,118,0.3);}
 .sr-add:hover{background:rgba(0,230,118,0.35);transform:scale(1.1);}
-.search-kb-panel{flex-shrink:0;border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);padding:6px;display:flex;flex-direction:column;gap:5px;}
+.search-kb-panel{flex-shrink:0;border:2px solid var(--green);border-radius:12px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);padding:6px;display:flex;flex-direction:column;gap:5px;}
 .search-row{display:flex;align-items:center;gap:6px;}
 .search-label{font-size:11px;font-weight:700;letter-spacing:1.5px;color:rgba(0,230,118,0.6);white-space:nowrap;}
 .search-input-wrap{flex:1;position:relative;}
-#searchInput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,230,118,0.5);border-radius:3px;color:#fff;padding:6px 12px;font-size:14px;font-weight:500;font-family:'Rajdhani',sans-serif;outline:none;cursor:pointer;letter-spacing:0.5px;}
+#searchInput{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(0,230,118,0.5);border-radius:10px;color:#fff;padding:6px 12px;font-size:14px;font-weight:500;font-family:'Rajdhani',sans-serif;outline:none;cursor:pointer;letter-spacing:0.5px;}
 #searchInput:focus{border-color:var(--green);box-shadow:0 0 8px rgba(0,230,118,0.3);}
 #searchInput::placeholder{color:rgba(255,255,255,0.2);font-style:italic;}
 .vk-rows{display:flex;flex-direction:column;gap:4px;}
 .vk-row{display:flex;justify-content:center;gap:4px;}
-.vk-key{height:42px;min-width:42px;flex:1;max-width:66px;background:#111;border:1px solid rgba(0,230,118,0.3);color:#e0e0e0;font-size:15px;font-weight:600;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s,transform 0.07s;font-family:'Rajdhani',sans-serif;letter-spacing:0.5px;box-shadow:0 2px 0 rgba(0,230,118,0.15);}
+.vk-key{height:42px;min-width:42px;flex:1;max-width:66px;background:#111;border:1px solid rgba(0,230,118,0.3);color:#e0e0e0;font-size:15px;font-weight:600;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s,transform 0.07s;font-family:'Rajdhani',sans-serif;letter-spacing:0.5px;box-shadow:0 2px 0 rgba(0,230,118,0.15);}
 .vk-key:active,.vk-key.pressed{background:rgba(0,230,118,0.35);transform:scale(0.93);box-shadow:0 0 8px rgba(0,230,118,0.5);color:#fff;}
 .vk-key:hover{background:rgba(0,230,118,0.12);color:#fff;}
 .vk-key.special{background:#0a0a0a;color:rgba(255,255,255,0.6);font-size:12px;flex:1.5;max-width:92px;border-color:rgba(0,230,118,0.2);}
@@ -112,58 +146,58 @@ body.console-mode::after{
 .vk-key.delete-key{background:#1a0000;border-color:rgba(255,23,68,0.3);flex:1.5;max-width:92px;font-size:17px;color:#ff5252;}
 .vk-key.shift-key{background:#0a0a0a;flex:1.5;max-width:92px;}
 .vk-key.shift-key.active{background:rgba(0,230,118,0.3);color:var(--green);}
-.right-col{width:220px;flex-shrink:0;display:flex;flex-direction:column;gap:5px;}
-.preview-panel{border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);overflow:hidden;flex-shrink:0;position:relative;}
-.preview-title{background:rgba(0,230,118,0.1);border-bottom:1px solid rgba(0,230,118,0.3);padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--green);display:flex;align-items:center;justify-content:space-between;text-shadow:0 0 6px rgba(0,230,118,0.4);}
-.preview-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:12px;transition:0.15s;}
+.right-col{width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;}
+.preview-panel{border:2px solid var(--green);border-radius:14px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);overflow:hidden;flex-shrink:0;position:relative;}
+.preview-title{background:rgba(0,230,118,0.1);border-bottom:1px solid rgba(0,230,118,0.3);padding:5px 12px;font-size:12px;font-weight:700;letter-spacing:2px;color:var(--green);display:flex;align-items:center;justify-content:space-between;text-shadow:0 0 6px rgba(0,230,118,0.4);}
+.preview-close{background:none;border:none;color:rgba(255,255,255,0.4);cursor:pointer;font-size:14px;transition:0.15s;}
 .preview-close:hover{color:#ff5252;}
-.preview-thumb{width:100%;height:120px;object-fit:cover;background:#111;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.15);font-size:28px;}
-.preview-thumb img{width:100%;height:120px;object-fit:cover;}
-.preview-info{padding:5px 8px;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ddd;border-top:1px solid rgba(0,230,118,0.15);}
-.preview-mini-bar{display:flex;align-items:center;gap:6px;padding:5px 8px;border-top:1px solid rgba(0,230,118,0.15);}
-.mini-bar-track{flex:1;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;}
-.mini-bar-fill{width:0%;height:100%;background:var(--green);border-radius:2px;transition:width 1s linear;}
-.mini-btn{background:none;border:none;color:var(--green);cursor:pointer;font-size:14px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;}
+.preview-thumb{width:100%;height:155px;object-fit:cover;background:#111;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.15);font-size:28px;}
+.preview-thumb img{width:100%;height:155px;object-fit:cover;}
+.preview-info{padding:6px 10px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#ddd;border-top:1px solid rgba(0,230,118,0.15);}
+.preview-mini-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;border-top:1px solid rgba(0,230,118,0.15);}
+.mini-bar-track{flex:1;height:4px;background:rgba(255,255,255,0.1);border-radius:6px;}
+.mini-bar-fill{width:0%;height:100%;background:var(--green);border-radius:6px;transition:width 1s linear;}
+.mini-btn{background:none;border:none;color:var(--green);cursor:pointer;font-size:18px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
 .mini-btn:hover{color:#fff;}
-.vol-pitch-panel{border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);padding:8px;flex-shrink:0;}
+.vol-pitch-panel{border:2px solid var(--green);border-radius:14px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);padding:10px;flex-shrink:0;}
 .vol-pitch-row{display:flex;gap:8px;}
-.vp-block{flex:1;border:1px solid rgba(0,230,118,0.3);border-radius:3px;padding:5px;background:rgba(0,230,118,0.03);display:flex;flex-direction:column;gap:4px;align-items:center;}
-.vp-label{font-size:9px;font-weight:700;letter-spacing:2px;color:rgba(0,230,118,0.7);text-transform:uppercase;}
-.vp-value{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:700;color:var(--green);text-shadow:0 0 10px rgba(0,230,118,0.6);min-width:40px;text-align:center;line-height:1;}
-.vp-btns{display:flex;gap:4px;}
-.vp-btn{width:28px;height:28px;border:1px solid rgba(0,230,118,0.4);background:rgba(0,230,118,0.08);color:var(--green);font-size:16px;font-weight:700;border-radius:3px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.15s;font-family:'Rajdhani',sans-serif;}
+.vp-block{flex:1;border:1px solid rgba(0,230,118,0.3);border-radius:10px;padding:7px;background:rgba(0,230,118,0.03);display:flex;flex-direction:column;gap:5px;align-items:center;}
+.vp-label{font-size:11px;font-weight:700;letter-spacing:2px;color:rgba(0,230,118,0.7);text-transform:uppercase;}
+.vp-value{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:700;color:var(--green);text-shadow:0 0 10px rgba(0,230,118,0.6);min-width:40px;text-align:center;line-height:1;}
+.vp-btns{display:flex;gap:6px;}
+.vp-btn{width:38px;height:38px;border:1px solid rgba(0,230,118,0.4);background:rgba(0,230,118,0.08);color:var(--green);font-size:22px;font-weight:700;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:0.15s;font-family:'Rajdhani',sans-serif;}
 .vp-btn:hover{background:rgba(0,230,118,0.25);box-shadow:0 0 8px rgba(0,230,118,0.3);}
 .vp-btn:active{transform:scale(0.9);}
-.vp-k-btn{width:24px;height:24px;border-radius:50%;border:2px solid var(--yellow);background:rgba(255,214,0,0.1);color:var(--yellow);font-size:10px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;font-family:'Orbitron',sans-serif;box-shadow:0 0 8px rgba(255,214,0,0.3);}
-.action-panel{border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);overflow:hidden;flex-shrink:0;}
+.vp-k-btn{width:30px;height:30px;border-radius:50%;border:2px solid var(--yellow);background:rgba(255,214,0,0.1);color:var(--yellow);font-size:12px;font-weight:900;display:flex;align-items:center;justify-content:center;cursor:pointer;align-self:center;font-family:'Orbitron',sans-serif;box-shadow:0 0 8px rgba(255,214,0,0.3);}
+.action-panel{border:2px solid var(--green);border-radius:14px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);overflow:hidden;flex-shrink:0;}
 .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(0,230,118,0.15);}
-.action-btn{background:#000;border:none;cursor:pointer;padding:9px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:0.15s;color:var(--text2);font-family:'Rajdhani',sans-serif;}
+.action-btn{background:#000;border:none;cursor:pointer;padding:13px 6px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transition:0.15s;color:var(--text2);font-family:'Rajdhani',sans-serif;}
 .action-btn:hover{background:rgba(0,230,118,0.12);}
 .action-btn:active{background:rgba(0,230,118,0.25);}
 .action-btn.active-btn{background:rgba(0,230,118,0.15);color:var(--green);}
-.ab-icon{font-size:16px;}
-.ab-label{font-size:9px;font-weight:700;letter-spacing:1px;white-space:nowrap;}
-.qr-svc-panel{border:2px solid var(--green);border-radius:4px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
-.qr-row{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid rgba(0,230,118,0.2);flex-shrink:0;}
-.qr-box{background:#fff;padding:3px;border-radius:3px;width:50px;height:50px;flex-shrink:0;overflow:hidden;}
-#qrcode canvas,#qrcode img{width:44px!important;height:44px!important;}
-.qr-text{font-size:9px;color:rgba(255,255,255,0.4);line-height:1.5;}
-.btn-scan{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);padding:4px 8px;border-radius:3px;font-size:9px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'Rajdhani',sans-serif;white-space:nowrap;transition:0.2s;display:block;margin-top:3px;text-align:center;}
+.ab-icon{font-size:22px;}
+.ab-label{font-size:11px;font-weight:700;letter-spacing:1px;white-space:nowrap;}
+.qr-svc-panel{border:2px solid var(--green);border-radius:14px;background:#000;box-shadow:0 0 10px rgba(0,230,118,0.2);flex:1;min-height:0;overflow:hidden;display:flex;flex-direction:column;}
+.qr-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid rgba(0,230,118,0.2);flex-shrink:0;}
+.qr-box{background:#fff;padding:3px;border-radius:10px;width:62px;height:62px;flex-shrink:0;overflow:hidden;}
+#qrcode canvas,#qrcode img{width:56px!important;height:56px!important;}
+.qr-text{font-size:10px;color:rgba(255,255,255,0.4);line-height:1.5;}
+.btn-scan{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);padding:5px 10px;border-radius:10px;font-size:11px;font-weight:700;letter-spacing:0.5px;cursor:pointer;font-family:'Rajdhani',sans-serif;white-space:nowrap;transition:0.2s;display:block;margin-top:4px;text-align:center;}
 .btn-scan:hover{background:rgba(0,230,118,0.25);}
-.svc-btns{padding:6px;display:flex;flex-direction:column;gap:4px;flex:1;justify-content:center;}
-.svc-btn{display:flex;align-items:center;gap:6px;border:none;color:#fff;padding:8px 10px;border-radius:3px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:0.5px;transition:all 0.15s;width:100%;text-align:left;font-family:'Rajdhani',sans-serif;}
+.svc-btns{padding:8px;display:flex;flex-direction:column;gap:6px;flex:1;justify-content:center;}
+.svc-btn{display:flex;align-items:center;gap:8px;border:none;color:#fff;padding:11px 12px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:700;letter-spacing:0.5px;transition:all 0.15s;width:100%;text-align:left;font-family:'Rajdhani',sans-serif;}
 .svc-btn:hover{filter:brightness(1.3);}
 .svc-btn:active{transform:scale(0.97);}
 .svc-btn.food{background:linear-gradient(135deg,rgba(255,160,0,0.3),rgba(230,81,0,0.25));border:1px solid rgba(255,160,0,0.4);}
 .svc-btn.billing{background:linear-gradient(135deg,rgba(0,200,230,0.2),rgba(0,150,180,0.2));border:1px solid rgba(0,200,230,0.35);}
 .svc-btn.call{background:linear-gradient(135deg,rgba(0,230,118,0.2),rgba(0,150,80,0.2));border:1px solid rgba(0,230,118,0.35);}
-.transport-bar{flex-shrink:0;border-top:2px solid var(--green);background:#000;box-shadow:0 0 12px rgba(0,230,118,0.25);display:flex;align-items:center;height:60px;padding:0 8px;gap:4px;}
-.transport-group{display:flex;align-items:center;gap:4px;border:1px solid rgba(0,230,118,0.3);border-radius:4px;padding:0 6px;height:46px;background:rgba(0,230,118,0.03);flex:1;justify-content:space-around;}
-.t-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:none;border:none;cursor:pointer;color:#ccc;transition:0.15s;padding:4px 8px;border-radius:3px;font-family:'Rajdhani',sans-serif;min-width:50px;}
+.transport-bar{flex-shrink:0;border-top:2px solid var(--green);background:#000;box-shadow:0 0 12px rgba(0,230,118,0.25);display:flex;align-items:center;height:78px;padding:0 8px;gap:4px;}
+.transport-group{display:flex;align-items:center;gap:4px;border:1px solid rgba(0,230,118,0.3);border-radius:14px;padding:0 6px;height:62px;background:rgba(0,230,118,0.03);flex:1;justify-content:space-around;}
+.t-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:none;border:none;cursor:pointer;color:#ccc;transition:0.15s;padding:6px 12px;border-radius:10px;font-family:'Rajdhani',sans-serif;min-width:64px;}
 .t-btn:hover{background:rgba(0,230,118,0.1);color:#fff;}
 .t-btn:active{transform:scale(0.92);}
-.t-btn .t-icon{font-size:18px;line-height:1;}
-.t-btn .t-label{font-size:9px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.5);}
+.t-btn .t-icon{font-size:26px;line-height:1;}
+.t-btn .t-label{font-size:11px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.5);}
 .t-btn:hover .t-label{color:var(--green);}
 .t-btn.play-btn{background:rgba(0,230,118,0.12);border:1px solid rgba(0,230,118,0.4);color:var(--green);}
 .t-btn.play-btn:hover{background:rgba(0,230,118,0.25);box-shadow:0 0 10px rgba(0,230,118,0.3);}
@@ -178,17 +212,17 @@ body.console-mode::after{
 .t-btn.call-btn:hover{background:rgba(255,214,0,0.1);}
 .t-btn.active-state{color:var(--green)!important;text-shadow:0 0 8px rgba(0,230,118,0.7);}
 .t-btn.active-state .t-label{color:var(--green)!important;}
-.timecode-box{border:1px solid rgba(0,230,118,0.35);border-radius:4px;padding:4px 10px;background:rgba(0,230,118,0.04);flex-shrink:0;min-width:100px;font-family:'Orbitron',sans-serif;font-size:10px;color:var(--green);line-height:1.8;text-shadow:0 0 6px rgba(0,230,118,0.4);}
-.tc-label{font-size:8px;color:rgba(0,230,118,0.5);letter-spacing:1px;}
-.now-playing-bar{background:rgba(0,230,118,0.08);border-bottom:1px solid rgba(0,230,118,0.2);padding:2px 10px;font-size:11px;font-weight:600;color:var(--green);white-space:nowrap;overflow:hidden;flex-shrink:0;display:flex;align-items:center;gap:8px;letter-spacing:0.5px;text-shadow:0 0 8px rgba(0,230,118,0.4);}
+.timecode-box{border:1px solid rgba(0,230,118,0.35);border-radius:12px;padding:6px 14px;background:rgba(0,230,118,0.04);flex-shrink:0;min-width:120px;font-family:'Orbitron',sans-serif;font-size:13px;color:var(--green);line-height:1.8;text-shadow:0 0 6px rgba(0,230,118,0.4);}
+.tc-label{font-size:9px;color:rgba(0,230,118,0.5);letter-spacing:1px;}
+.now-playing-bar{background:rgba(0,230,118,0.08);border-bottom:1px solid rgba(0,230,118,0.2);padding:4px 12px;font-size:13px;font-weight:600;color:var(--green);white-space:nowrap;overflow:hidden;flex-shrink:0;display:flex;align-items:center;gap:8px;letter-spacing:0.5px;text-shadow:0 0 8px rgba(0,230,118,0.4);}
 .np-pulse{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse-dot 1s ease-in-out infinite;box-shadow:0 0 6px var(--green);}
-#_notif_box_{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(0,20,0,0.95);border:1px solid var(--green);color:var(--green);padding:8px 20px;border-radius:4px;z-index:99999;font-size:13px;font-weight:700;letter-spacing:0.5px;display:none;white-space:nowrap;box-shadow:0 0 20px rgba(0,230,118,0.4);font-family:'Rajdhani',sans-serif;}
+#_notif_box_{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(0,20,0,0.95);border:1px solid var(--green);color:var(--green);padding:8px 20px;border-radius:20px;z-index:99999;font-size:13px;font-weight:700;letter-spacing:0.5px;display:none;white-space:nowrap;box-shadow:0 0 20px rgba(0,230,118,0.4);font-family:'Rajdhani',sans-serif;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:8999;backdrop-filter:blur(2px);}
 .modal-overlay.visible{display:flex;align-items:center;justify-content:center;}
-.modal-box{background:#050505;border:2px solid var(--green);border-radius:6px;padding:20px;box-shadow:0 0 30px rgba(0,230,118,0.35);min-width:320px;max-width:90vw;}
+.modal-box{background:#050505;border:2px solid var(--green);border-radius:18px;padding:20px;box-shadow:0 0 30px rgba(0,230,118,0.35);min-width:320px;max-width:90vw;}
 .modal-title{font-size:14px;font-weight:700;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:14px;border-bottom:1px solid rgba(0,230,118,0.3);padding-bottom:8px;font-family:'Orbitron',sans-serif;}
 .modal-body{font-size:13px;color:#ccc;margin-bottom:16px;line-height:1.6;}
-.modal-close{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);padding:6px 18px;border-radius:3px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;transition:0.2s;}
+.modal-close{background:rgba(0,230,118,0.1);border:1px solid rgba(0,230,118,0.4);color:var(--green);padding:6px 18px;border-radius:20px;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:700;transition:0.2s;}
 .modal-close:hover{background:rgba(0,230,118,0.25);}
 .placeholder-msg{padding:20px;color:rgba(255,255,255,0.25);font-size:12px;text-align:center;line-height:1.8;}
 
@@ -293,6 +327,34 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
 @keyframes barLoop{0%{width:0%;}50%{width:100%;}100%{width:0%;}}
 #screen2-app #yt-container{width:100vw;height:100vh;position:fixed;top:0;left:0;}
 #screen2-app #yt-container iframe{width:100%!important;height:100%!important;border:none;}
+/* Screen 2 — realtime song info overlay (lower third) */
+#s2-overlay{position:fixed;bottom:0;left:0;right:0;z-index:10;padding:0 0 12px 0;background:linear-gradient(transparent,rgba(0,0,0,0.85) 40%);pointer-events:none;opacity:0;transition:opacity 0.6s;}
+#s2-overlay.visible{opacity:1;}
+#s2-ov-inner{padding:0 32px 6px;}
+#s2-ov-title{font-family:'Orbitron',sans-serif;font-size:clamp(18px,2.8vw,36px);font-weight:900;color:#fff;text-shadow:0 0 20px rgba(0,230,118,0.6),0 2px 8px rgba(0,0,0,0.9);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:1px;}
+#s2-ov-channel{font-size:clamp(11px,1.4vw,18px);color:rgba(0,230,118,0.75);margin-top:4px;font-family:'Rajdhani',sans-serif;font-weight:600;letter-spacing:2px;text-transform:uppercase;}
+#s2-ov-bar-wrap{display:flex;align-items:center;gap:10px;margin-top:8px;}
+#s2-ov-time-cur{font-family:'Orbitron',sans-serif;font-size:clamp(10px,1.2vw,15px);color:rgba(0,230,118,0.8);min-width:40px;text-align:right;}
+#s2-ov-bar{flex:1;height:4px;background:rgba(255,255,255,0.15);border-radius:4px;overflow:hidden;}
+#s2-ov-fill{height:100%;width:0%;background:linear-gradient(90deg,#00e676,#69ff47);border-radius:4px;transition:width 0.9s linear;box-shadow:0 0 8px rgba(0,230,118,0.7);}
+#s2-ov-time-dur{font-family:'Orbitron',sans-serif;font-size:clamp(10px,1.2vw,15px);color:rgba(255,255,255,0.4);min-width:40px;}
+/* Console fullscreen button */
+.btn-fullscreen{background:rgba(0,230,118,0.08);border:1px solid rgba(0,230,118,0.3);color:var(--green);font-size:12px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:12px;cursor:pointer;font-family:'Rajdhani',sans-serif;transition:0.15s;white-space:nowrap;}
+.btn-fullscreen:hover{background:rgba(0,230,118,0.2);}
+/* Remote Android — bigger touch targets */
+#remote-app .r-t-btn{padding:10px 20px!important;border-radius:12px!important;}
+#remote-app .r-t-btn .ti{font-size:32px!important;}
+#remote-app .r-t-btn .tl{font-size:10px!important;letter-spacing:2px!important;}
+#remote-app .r-t-btn.play-big{width:80px!important;height:80px!important;}
+#remote-app .r-t-btn.play-big .ti{font-size:36px!important;}
+#remote-app .r-transport{padding:16px 14px!important;gap:20px!important;}
+#remote-app .r-ctrl-btn{height:48px!important;font-size:24px!important;border-radius:8px!important;}
+#remote-app .r-ctrl-val{font-size:28px!important;}
+#remote-app .r-tab{padding:12px 8px!important;font-size:13px!important;}
+#remote-app .r-search-go{padding:0 20px!important;font-size:14px!important;height:44px!important;}
+#remote-app .r-search-input{padding:10px 14px!important;font-size:15px!important;}
+#remote-app .r-vk-key{height:46px!important;font-size:16px!important;}
+#remote-app .r-q-del{width:30px!important;height:30px!important;font-size:13px!important;}
 </style>
 </head>
 <body>
@@ -311,16 +373,23 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
     </div>
   </div>
   <div class="cat-tabs">
-    <button class="cat-tab active" onclick="filterCat(this,'all')">ALL</button>
-    <button class="cat-tab" onclick="filterCat(this,'indonesia')">INDONESIA</button>
-    <button class="cat-tab" onclick="filterCat(this,'english')">ENGLISH</button>
-    <button class="cat-tab" onclick="filterCat(this,'mandarin')">MANDARIN</button>
-    <button class="cat-tab" onclick="filterCat(this,'other')">OTHER</button>
-    <button class="cat-tab" onclick="filterCat(this,'new')">NEW RELEASE</button>
+    <!-- BANNER IKLAN — slideshow foto atau running text -->
+    <div id="topBanner">
+      <!-- MODE SLIDESHOW: foto bergantian otomatis -->
+      <div id="bannerSlideshow">
+        <div class="b-slide-empty" id="bannerEmpty">📢 Belum ada foto — isi BANNER_PHOTOS di HTML</div>
+      </div>
+      <!-- MODE MARQUEE: teks berjalan -->
+      <div id="bannerMarquee" style="display:none;">
+        <div class="marquee-track" id="marqueeTrack"></div>
+      </div>
+    </div>
     <button class="cat-tab scan-me-btn" id="scanMeBtn" onclick="toggleScanQR(this)">SCAN ME</button>
+    <button class="cat-tab promo-btn" id="promoBtnTab" onclick="togglePromoOverlay(this)">📸 PROMO</button>
   </div>
   <div class="room-info"><div class="room-dot"></div>ROOM 05</div>
   <button class="btn-open-player" id="openPlayerBtn">📺 BUKA LAYAR 2</button>
+  <button class="btn-fullscreen" id="btnFullscreen" onclick="toggleFullscreen()">⛶ FULLSCREEN</button>
 </div>
 
 <div class="now-playing-bar" id="nowPlayingBar">
@@ -352,6 +421,24 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
         <div class="qr-scan-sub">Scan QR dengan HP Anda<br>untuk kontrol lagu dari jarak jauh</div>
         <button class="qr-scan-close" onclick="toggleScanQR(document.getElementById('scanMeBtn'))">✕ TUTUP</button>
       </div>
+      <div class="promo-overlay" id="promoOverlay">
+        <div class="promo-ov-title">📸 FOTO PROMO — THE LINKS KTV BATAM</div>
+        <div class="promo-img-wrap" id="promoImgWrap">
+          <div class="promo-img-empty" id="promoImgEmpty">📷<br><span style="font-size:13px;letter-spacing:1px;margin-top:6px;display:block;">Belum ada foto — tambahkan URL di HTML</span></div>
+          <img class="promo-img" id="promoImg" src="" alt="Promo" referrerpolicy="no-referrer" crossorigin="anonymous" style="display:none;" onerror="promoImgError(this)"/>
+        </div>
+        <div class="promo-nav-row">
+          <button class="promo-nav-btn" onclick="promoNav(-1)">◀</button>
+          <div>
+            <div class="promo-dots" id="promoDots"></div>
+            <div class="promo-counter" id="promoCounter" style="text-align:center;margin-top:6px;">— / —</div>
+          </div>
+          <button class="promo-nav-btn" onclick="promoNav(1)">▶</button>
+        </div>
+        <div class="promo-footer">
+          <button class="promo-close" onclick="togglePromoOverlay(document.getElementById('promoBtnTab'))">✕ TUTUP</button>
+        </div>
+      </div>
       <div class="search-overlay" id="searchOverlay">
         <div class="search-overlay-header">
           <span>🔍 HASIL PENCARIAN YOUTUBE</span>
@@ -381,8 +468,8 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
         <button class="preview-close" onclick="document.getElementById('previewPanel').style.display='none'">✕</button>
       </div>
       <div class="preview-thumb" id="previewThumb" style="position:relative;overflow:hidden;padding:0;">
-        <div id="previewThumbEmpty" style="width:100%;height:120px;display:flex;align-items:center;justify-content:center;font-size:28px;color:rgba(255,255,255,0.15);">🎵</div>
-        <div id="previewPlayerDiv" style="position:absolute;top:0;left:0;width:100%;height:120px;display:none;pointer-events:none;"></div>
+        <div id="previewThumbEmpty" style="width:100%;height:155px;display:flex;align-items:center;justify-content:center;font-size:32px;color:rgba(255,255,255,0.15);">🎵</div>
+        <img id="previewThumbImg" src="" alt="" style="width:100%;height:155px;object-fit:cover;display:none;">
       </div>
       <div class="preview-info" id="previewInfo" style="color:rgba(255,255,255,0.3);font-style:italic;">Pilih lagu untuk preview</div>
       <div class="preview-mini-bar">
@@ -592,6 +679,18 @@ body.screen2-mode::before,body.screen2-mode::after{display:none;}
     <div class="s2-bar"><div class="s2-bar-fill"></div></div>
   </div>
   <div id="yt-container"><div id="player"></div></div>
+  <!-- Realtime song info overlay (lower-third) -->
+  <div id="s2-overlay">
+    <div id="s2-ov-inner">
+      <div id="s2-ov-title">—</div>
+      <div id="s2-ov-channel">THE LINKS KTV · BATAM</div>
+      <div id="s2-ov-bar-wrap">
+        <span id="s2-ov-time-cur">00:00</span>
+        <div id="s2-ov-bar"><div id="s2-ov-fill"></div></div>
+        <span id="s2-ov-time-dur">00:00</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -622,6 +721,8 @@ if (isRemote) {
   document.body.classList.add('screen2-mode');
 } else {
   document.body.classList.add('console-mode');
+  /* Jalankan banner iklan setelah halaman siap */
+  window.addEventListener('load', initBanner);
 }
 
 /* ============================================================
@@ -673,6 +774,21 @@ function showNotif(text) {
 function sendCmd(action, payload = null) {
   if (db) db.ref('commands').push({ action, payload, ts: Date.now() }).catch(() => {});
 }
+
+/* ---- Fullscreen toggle (console) ---- */
+function toggleFullscreen() {
+  if (document.fullscreenElement) {
+    document.exitFullscreen().catch(() => {});
+    document.getElementById('btnFullscreen').textContent = '⛶ FULLSCREEN';
+  } else {
+    document.documentElement.requestFullscreen().catch(() => {});
+    document.getElementById('btnFullscreen').textContent = '✕ EXIT FULL';
+  }
+}
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('btnFullscreen');
+  if (btn) btn.textContent = document.fullscreenElement ? '✕ EXIT FULL' : '⛶ FULLSCREEN';
+});
 
 /* ---- Broadcast state ---- */
 let broadcastTimer = null;
@@ -753,7 +869,7 @@ function openPlayer() {
   showNotif('📺 Layar 2 dibuka — siap memutar');
 }
 
-/* ---- Messages from Layar 2 (mirror only — preview player is master) ---- */
+/* ---- Messages from Layar 2 ---- */
 window.addEventListener('message', e => {
   if (isRemote || isScreen2) return;
   const d = e.data;
@@ -761,15 +877,12 @@ window.addEventListener('message', e => {
     playerReady = true;
     try { playerWindow.postMessage({ type: 'volume', val: volVal }, '*'); } catch(ex) {}
     if (muteMode) try { playerWindow.postMessage({ type: 'mute', val: true }, '*'); } catch(ex) {}
-    /* Send current playing song — cue then seek to exact preview position */
     const curSong = playlist[currentIndex];
     if (curSong) {
       const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
       if (videoAge < 5) {
-        /* New video just started — cue Layar 2 then start it via resume (already handled by _syncStartTimer) */
         try { playerWindow.postMessage({ type: 'cue', id: curSong.id }, '*'); } catch(ex) {}
       } else {
-        /* Video already in progress — load and seek to match preview player */
         try { playerWindow.postMessage({ type: 'play', id: curSong.id }, '*'); } catch(ex) {}
         setTimeout(() => {
           if (previewYTReady && previewYTPlayer && playerWindow && !playerWindow.closed) {
@@ -784,7 +897,14 @@ window.addEventListener('message', e => {
     }
     return;
   }
-  /* 'ended' from Layar 2 is ignored — preview player's onStateChange handles it */
+  /* Terima 'ended' dari Layar 2 — fake player tidak bisa deteksi ini sendiri */
+  if (d && d.type === 'ended') { songEnded(); return; }
+  /* Terima 'progress' dari Layar 2 — update durasi & progress bar */
+  if (d && d.type === 'progress') {
+    if (previewYTPlayer && previewYTPlayer._setDuration) previewYTPlayer._setDuration(d.duration || 0);
+    if (d.duration > 0) { updateProgress(d.current, d.duration); elapsedSeconds = Math.floor(d.current); broadcastProgress(d.current, d.duration); }
+    return;
+  }
 });
 
 /* ---- Play / Pause ---- */
@@ -804,7 +924,8 @@ function playSelected() {
   /* Step 1 — CUE both players (load without auto-playing) */
   if (previewYTReady && previewYTPlayer) {
     try { previewYTPlayer.cueVideoById(s.id); } catch(e) {}
-    document.getElementById('previewPlayerDiv').style.display = 'block';
+    const _timg = document.getElementById('previewThumbImg');
+    if (_timg) { _timg.src = 'https://img.youtube.com/vi/' + s.id + '/hqdefault.jpg'; _timg.style.display = 'block'; }
     document.getElementById('previewThumbEmpty').style.display = 'none';
   } else {
     pendingVideoId = s.id; /* loaded when previewYTPlayer.onReady fires */
@@ -814,6 +935,9 @@ function playSelected() {
     /* Tell Layar 2 to also CUE (load but don't play yet) */
     try { playerWindow.postMessage({ type: 'cue', id: s.id }, '*'); } catch(err) {}
   }
+
+  /* Kirim info lagu ke Screen 2 untuk overlay realtime */
+  try { if (playerWindow && !playerWindow.closed) playerWindow.postMessage({ type: 'songInfo', title: s.title || '', channel: s.channel || '' }, '*'); } catch(e) {}
 
   /* Step 2 — Start BOTH simultaneously after 1.5 s buffer window */
   clearTimeout(window._syncStartTimer);
@@ -847,9 +971,9 @@ function clearPlaylist() {
   playlist = []; currentIndex = 0; isPlaying = false; updatePlayBtn(); stopProgressTimer();
   try { playerWindow?.postMessage({ type: 'pause' }, '*'); } catch(e) {}
   try { if (previewYTReady && previewYTPlayer) previewYTPlayer.stopVideo(); } catch(e) {}
-  const playerDiv = document.getElementById('previewPlayerDiv');
+  const _timg2 = document.getElementById('previewThumbImg');
   const emptyEl = document.getElementById('previewThumbEmpty');
-  if (playerDiv) playerDiv.style.display = 'none';
+  if (_timg2) { _timg2.style.display = 'none'; _timg2.src = ''; }
   if (emptyEl) emptyEl.style.display = 'flex';
   renderSongRows(); updatePreview(null); renderQueueModal(); showNotif('🗑 Semua lagu dihapus dari antrian');
 }
@@ -915,7 +1039,7 @@ function changeVol(d) {
   volVal = Math.max(0, Math.min(100, volVal + d));
   document.getElementById('volVal').textContent = volVal;
   try { playerWindow?.postMessage({ type: 'volume', val: volVal }, '*'); } catch(e) {}
-  try { if (previewYTReady && previewYTPlayer) previewYTPlayer.setVolume(volVal); } catch(e) {}
+  /* Preview player selalu mute — volume hanya dikirim ke Layar 2 */
   showNotif('🔊 Volume: ' + volVal + '%'); broadcastState();
 }
 function changePitch(d) {
@@ -936,7 +1060,7 @@ function toggleMute(btn) {
   muteMode = !muteMode; btn.classList.toggle('active-state', muteMode);
   document.getElementById('muteBtnIcon').textContent = muteMode ? '🔇' : '🔊';
   try { playerWindow?.postMessage({ type: 'mute', val: muteMode }, '*'); } catch(e) {}
-  try { if (previewYTReady && previewYTPlayer) { muteMode ? previewYTPlayer.mute() : previewYTPlayer.unMute(); } } catch(e) {}
+  /* Preview player selalu tetap mute — tombol mute hanya mengatur Layar 2 */
   showNotif(muteMode ? '🔇 Mute ON' : '🔊 Mute OFF');
 }
 function toggleVocal(btn) { vocalMode = !vocalMode; btn.classList.toggle('active-state', vocalMode); showNotif(vocalMode ? '🎤 Vocal ON' : '🎤 Vocal OFF (Instrumental)'); }
@@ -954,6 +1078,142 @@ function toggleScanQR(btn) {
   const isVis = overlay.classList.contains('visible');
   overlay.classList.toggle('visible', !isVis);
   if (btn) btn.classList.toggle('active', !isVis);
+}
+
+/* ============================================================
+   BANNER IKLAN — Konfigurasi banner panjang di top bar
+   ============================================================
+
+   LANGKAH 1: Pilih mode banner
+     'slideshow' = foto bergantian otomatis
+     'marquee'   = teks berjalan (running text)
+   ============================================================ */
+const BANNER_MODE = 'slideshow'; /* <-- ganti ke 'marquee' untuk teks berjalan */
+
+/* ---- PENGATURAN MODE SLIDESHOW ---- */
+/* Masukkan URL foto iklan Anda di sini (bisa banyak foto) */
+const BANNER_PHOTOS = [
+  'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi8sPPFT6Y6C4cNDePxUmwHgNCzCbU_DiObSGK4rto_cQ7v_Ra1Xeo-PqeM0t2QluDuFrRqkclXA4HrbAxiBbqVnApjWCBFthc6jlYOxN3BMRiNI_1Hc6IWj_xYczjZ902pwrB6ytTEeJ3DaF3Vx45iRRnxf6zKMrjzcuCCRohFDh8L1bX1ZqF7MOYTCNc/s1280/Black%20Abstract%20Whiskey%20Night%20Party%20Tabloid%20-%20Made%20with%20PosterMyWall.jpg',
+  /* tambahkan URL foto lagi di bawah ini: */
+  /* 'https://blogger.googleusercontent.com/...foto2.jpg', */
+  /* 'https://blogger.googleusercontent.com/...foto3.jpg', */
+];
+/* Berapa detik setiap foto tampil (5000 = 5 detik) */
+const BANNER_INTERVAL = 5000;
+
+/* ---- PENGATURAN MODE MARQUEE (TEKS BERJALAN) ---- */
+/* Tulis teks promosi Anda di sini */
+const BANNER_TEXT  = '🎤 Selamat datang di THE LINKS KTV BATAM! 🍾 Promo spesial malam ini — Happy Hour pukul 20:00–22:00 🎉 Diskon 30% untuk semua minuman! 🎵 Pesan sekarang dan nikmati malam terbaik Anda! ✨';
+/* Warna teks */
+const BANNER_COLOR = '#ffd600';
+/* Ukuran teks */
+const BANNER_SIZE  = '17px';
+/* Kecepatan scroll: makin kecil angkanya makin cepat */
+const BANNER_SPEED = '28s';
+
+/* ============================================================ */
+
+/* ---- Inisialisasi Banner ---- */
+let _bannerIdx = 0, _bannerTimer = null;
+function initBanner() {
+  const ss  = document.getElementById('bannerSlideshow');
+  const mq  = document.getElementById('bannerMarquee');
+  if (!ss || !mq) return;
+
+  if (BANNER_MODE === 'marquee') {
+    ss.style.display = 'none';
+    mq.style.display = 'flex';
+    const track = document.getElementById('marqueeTrack');
+    track.style.animationDuration = BANNER_SPEED;
+    track.innerHTML = `<span class="marquee-text" style="color:${BANNER_COLOR};font-size:${BANNER_SIZE};">${BANNER_TEXT}</span><span class="marquee-text" style="color:${BANNER_COLOR};font-size:${BANNER_SIZE};">${BANNER_TEXT}</span>`;
+  } else {
+    ss.style.display = 'block';
+    mq.style.display = 'none';
+    const empty = document.getElementById('bannerEmpty');
+    if (!BANNER_PHOTOS.length) { if(empty) empty.style.display='flex'; return; }
+    if (empty) empty.style.display = 'none';
+    /* Buat slides */
+    ss.innerHTML = '';
+    BANNER_PHOTOS.forEach((url, i) => {
+      const d = document.createElement('div');
+      d.className = 'b-slide' + (i === 0 ? ' active' : '');
+      d.innerHTML = `<img src="${url}" referrerpolicy="no-referrer" onerror="this.style.opacity=0">`;
+      ss.appendChild(d);
+    });
+    if (BANNER_PHOTOS.length > 1) {
+      _bannerTimer = setInterval(() => {
+        const slides = ss.querySelectorAll('.b-slide');
+        slides[_bannerIdx].classList.remove('active');
+        _bannerIdx = (_bannerIdx + 1) % slides.length;
+        slides[_bannerIdx].classList.add('active');
+      }, BANNER_INTERVAL);
+    }
+  }
+}
+
+/* ============================================================
+   FOTO PROMO — Tambahkan URL foto iklan club Anda di sini
+   Contoh: 'https://i.imgur.com/xxxxx.jpg'
+   Bisa juga URL Google Drive / Dropbox / hosting foto lainnya
+   ============================================================ */
+const PROMO_PHOTOS = [
+  /* === MASUKKAN URL FOTO DI SINI === */
+  'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEi8sPPFT6Y6C4cNDePxUmwHgNCzCbU_DiObSGK4rto_cQ7v_Ra1Xeo-PqeM0t2QluDuFrRqkclXA4HrbAxiBbqVnApjWCBFthc6jlYOxN3BMRiNI_1Hc6IWj_xYczjZ902pwrB6ytTEeJ3DaF3Vx45iRRnxf6zKMrjzcuCCRohFDh8L1bX1ZqF7MOYTCNc/s1280/Black%20Abstract%20Whiskey%20Night%20Party%20Tabloid%20-%20Made%20with%20PosterMyWall.jpg',
+  /* tambahkan foto lagi di bawah ini: */
+  /* 'https://blogger.googleusercontent.com/...foto2.jpg', */
+  /* 'https://blogger.googleusercontent.com/...foto3.jpg', */
+];
+/* ============================================================ */
+
+let _promoIdx = 0;
+
+function promoImgError(el) {
+  el.style.display = 'none';
+  const empty = document.getElementById('promoImgEmpty');
+  if (empty) {
+    empty.innerHTML = '⚠️<br><span style="font-size:12px;letter-spacing:0.5px;margin-top:8px;display:block;line-height:1.7;color:rgba(255,214,0,0.6);">Foto gagal dimuat.<br>Kemungkinan URL tidak langsung ke file gambar,<br>atau blog memblokir hotlink.<br><br>Coba upload ke <b style="color:var(--yellow)">imgur.com</b> lalu copy link-nya.</span>';
+    empty.style.display = 'flex';
+  }
+}
+
+function _promoRender() {
+  const img     = document.getElementById('promoImg');
+  const empty   = document.getElementById('promoImgEmpty');
+  const counter = document.getElementById('promoCounter');
+  const dots    = document.getElementById('promoDots');
+  if (!PROMO_PHOTOS.length) {
+    img.style.display   = 'none';
+    empty.innerHTML     = '📷<br><span style="font-size:13px;letter-spacing:1px;margin-top:6px;display:block;">Belum ada foto — tambahkan URL di HTML</span>';
+    empty.style.display = 'flex';
+    counter.textContent = '— / —';
+    dots.innerHTML = '';
+    return;
+  }
+  _promoIdx = ((_promoIdx % PROMO_PHOTOS.length) + PROMO_PHOTOS.length) % PROMO_PHOTOS.length;
+  const url = PROMO_PHOTOS[_promoIdx];
+  /* Reset error state dulu sebelum load gambar baru */
+  empty.style.display = 'none';
+  img.style.display   = 'block';
+  img.removeAttribute('src');
+  /* Coba tanpa cache-bust dulu, jika error handler akan tampilkan pesan */
+  img.src = url;
+  counter.textContent = (_promoIdx + 1) + ' / ' + PROMO_PHOTOS.length;
+  dots.innerHTML = PROMO_PHOTOS.map((_, i) =>
+    `<div class="promo-dot${i === _promoIdx ? ' active' : ''}" onclick="_promoIdx=${i};_promoRender()"></div>`
+  ).join('');
+}
+
+function promoNav(dir) {
+  _promoIdx += dir;
+  _promoRender();
+}
+
+function togglePromoOverlay(btn) {
+  const overlay = document.getElementById('promoOverlay');
+  const isVis   = overlay.classList.contains('visible');
+  overlay.classList.toggle('visible', !isVis);
+  if (btn) btn.classList.toggle('active', !isVis);
+  if (!isVis) { _promoIdx = 0; _promoRender(); }
 }
 
 /* ---- Render song list ---- */
@@ -981,13 +1241,18 @@ function renderSongRows() {
 function updatePreview(song) {
   const infoEl = document.getElementById('previewInfo');
   const emptyEl = document.getElementById('previewThumbEmpty');
-  const playerDiv = document.getElementById('previewPlayerDiv');
+  const timg = document.getElementById('previewThumbImg');
   if (!infoEl) return;
   if (!song) {
     if (emptyEl) emptyEl.style.display = 'flex';
-    if (playerDiv) playerDiv.style.display = 'none';
+    if (timg) { timg.style.display = 'none'; timg.src = ''; }
     infoEl.textContent = 'Pilih lagu untuk preview'; infoEl.style.color = 'rgba(255,255,255,0.3)';
     return;
+  }
+  if (timg && song.id) {
+    timg.src = 'https://img.youtube.com/vi/' + song.id + '/hqdefault.jpg';
+    timg.style.display = 'block';
+    if (emptyEl) emptyEl.style.display = 'none';
   }
   infoEl.textContent = song.title; infoEl.style.color = '#ddd';
 }
@@ -1272,63 +1537,64 @@ function r_addSong(item) {
 var ytPlayer, ytProgTimer, ytReady = false, ytPendingId = null;
 var previewYTPlayer, previewYTReady = false;
 
+/* ============================================================
+   FAKE PREVIEW PLAYER — timer-based, tanpa YouTube, tanpa suara
+   Satu-satunya sumber suara adalah Layar 2.
+   ============================================================ */
+function initFakePreviewPlayer() {
+  let _elapsedMs = 0, _startMs = 0, _playing = false, _duration = 0;
+  function fireState(state) {
+    if (state === 1) {
+      isPlaying = true; updatePlayBtn();
+      clearInterval(window._previewProgTimer);
+      window._previewProgTimer = setInterval(() => {
+        const cur = previewYTPlayer.getCurrentTime();
+        const dur = previewYTPlayer.getDuration();
+        if (dur > 0) { updateProgress(cur, dur); elapsedSeconds = Math.floor(cur); }
+        const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
+        if (playerWindow && !playerWindow.closed) {
+          if (videoAge > 60) try { playerWindow.postMessage({ type: 'syncPos', val: cur }, '*'); } catch(ex) {}
+          const s = playlist[currentIndex];
+          try { playerWindow.postMessage({ type: 'songInfo', title: s?.title || '', channel: s?.channel || '', cur, dur }, '*'); } catch(ex) {}
+        }
+        broadcastProgress(cur, dur);
+      }, 1000);
+    } else {
+      isPlaying = false; updatePlayBtn();
+      clearInterval(window._previewProgTimer);
+    }
+  }
+  previewYTPlayer = {
+    _setDuration: function(d) { _duration = d; },
+    cueVideoById: function(id) { _elapsedMs = 0; },
+    playVideo: function() { if (_playing) return; _playing = true; _startMs = Date.now() - _elapsedMs; fireState(1); },
+    pauseVideo: function() { if (!_playing) return; _playing = false; _elapsedMs = Date.now() - _startMs; fireState(2); },
+    stopVideo: function() { _playing = false; _elapsedMs = 0; clearInterval(window._previewProgTimer); isPlaying = false; updatePlayBtn(); },
+    getCurrentTime: function() { return _playing ? (Date.now() - _startMs) / 1000 : _elapsedMs / 1000; },
+    getDuration: function() { return _duration; },
+    mute: function() {}, unMute: function() {}, setVolume: function() {}
+  };
+  previewYTReady = true;
+  if (pendingVideoId) {
+    const vid = pendingVideoId; pendingVideoId = null;
+    previewYTPlayer.cueVideoById(vid);
+    const timg = document.getElementById('previewThumbImg');
+    if (timg) { timg.src = 'https://img.youtube.com/vi/' + vid + '/hqdefault.jpg'; timg.style.display = 'block'; }
+    const emptyEl = document.getElementById('previewThumbEmpty');
+    if (emptyEl) emptyEl.style.display = 'none';
+    if (playerWindow && !playerWindow.closed && playerReady)
+      try { playerWindow.postMessage({ type: 'cue', id: vid }, '*'); } catch(ex) {}
+    clearTimeout(window._syncStartTimer);
+    window._syncStartTimer = setTimeout(() => {
+      previewYTPlayer.playVideo();
+      try { if (playerWindow && !playerWindow.closed) playerWindow.postMessage({ type: 'resume' }, '*'); } catch(ex) {}
+    }, 1500);
+  }
+}
+
 function onYouTubeIframeAPIReady() {
   if (!isScreen2 && !isRemote) {
-    /* Preview player — MASTER player. Layar 2 mirrors this. */
-    previewYTPlayer = new YT.Player('previewPlayerDiv', {
-      width: '100%', height: '120',
-      videoId: '',
-      playerVars: { autoplay: 1, controls: 0, rel: 0, iv_load_policy: 3, modestbranding: 1, playsinline: 1, enablejsapi: 1 },
-      events: {
-        onReady: function(e) {
-          previewYTReady = true;
-          e.target.setVolume(volVal);
-          if (muteMode) e.target.mute();
-          /* Load any video queued before player was ready — cue both then start together */
-          if (pendingVideoId) {
-            const vid = pendingVideoId; pendingVideoId = null;
-            e.target.cueVideoById(vid);
-            document.getElementById('previewPlayerDiv').style.display = 'block';
-            document.getElementById('previewThumbEmpty').style.display = 'none';
-            if (playerWindow && !playerWindow.closed && playerReady)
-              try { playerWindow.postMessage({ type: 'cue', id: vid }, '*'); } catch(ex) {}
-            /* Start both simultaneously */
-            clearTimeout(window._syncStartTimer);
-            window._syncStartTimer = setTimeout(() => {
-              try { e.target.playVideo(); } catch(ex) {}
-              try { if (playerWindow && !playerWindow.closed) playerWindow.postMessage({ type: 'resume' }, '*'); } catch(ex) {}
-            }, 1500);
-          }
-        },
-        onStateChange: function(e) {
-          if (e.data === 1) { /* playing */
-            isPlaying = true; updatePlayBtn();
-            /* Drive progress + sync Layar 2 every second */
-            clearInterval(window._previewProgTimer);
-            window._previewProgTimer = setInterval(() => {
-              if (!previewYTReady || !previewYTPlayer) return;
-              try {
-                const cur = previewYTPlayer.getCurrentTime();
-                const dur = previewYTPlayer.getDuration();
-                if (dur > 0) { updateProgress(cur, dur); elapsedSeconds = Math.floor(cur); }
-                /* Only sync position AFTER 60 s from video start — prevents skipping ads/intro */
-                const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
-                if (videoAge > 60 && playerWindow && !playerWindow.closed)
-                  playerWindow.postMessage({ type: 'syncPos', val: cur }, '*');
-              } catch(ex) {}
-            }, 1000);
-          } else if (e.data === 2) { /* paused */
-            isPlaying = false; updatePlayBtn();
-            clearInterval(window._previewProgTimer);
-          } else if (e.data === 0) { /* ended */
-            isPlaying = false; updatePlayBtn();
-            clearInterval(window._previewProgTimer);
-            songEnded();
-          }
-        }
-      }
-    });
-    return;
+    return; /* Console pakai fake timer player — tidak perlu YouTube IFrame */
   }
   if (!isScreen2) return;
   ytPlayer = new YT.Player('player', {
@@ -1379,8 +1645,27 @@ if (isScreen2) {
       if (d.type === 'syncPos' && ytPlayer && ytReady) {
         try { const cur = ytPlayer.getCurrentTime(); if (Math.abs(cur - d.val) > 2) ytPlayer.seekTo(d.val, true); } catch(ex) {}
       }
+      /* songInfo — realtime overlay update */
+      if (d.type === 'songInfo') {
+        const ov = document.getElementById('s2-overlay');
+        const titleEl = document.getElementById('s2-ov-title');
+        const chEl    = document.getElementById('s2-ov-channel');
+        const fillEl  = document.getElementById('s2-ov-fill');
+        const curEl   = document.getElementById('s2-ov-time-cur');
+        const durEl   = document.getElementById('s2-ov-time-dur');
+        if (d.title !== undefined && titleEl) titleEl.textContent = d.title || '—';
+        if (d.channel !== undefined && chEl) chEl.textContent = d.channel || 'THE LINKS KTV · BATAM';
+        if (d.cur !== undefined && d.dur !== undefined && d.dur > 0) {
+          const pct = Math.min(100, (d.cur / d.dur) * 100);
+          if (fillEl) fillEl.style.width = pct + '%';
+          if (curEl) curEl.textContent = fmtTime(d.cur);
+          if (durEl) durEl.textContent = fmtTime(d.dur);
+        }
+        if (ov) ov.classList.toggle('visible', !!d.title);
+      }
     } catch(err) {}
   });
+  function fmtTime(s) { const m = Math.floor(s/60); const sec = Math.floor(s%60); return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); }
   document.addEventListener('dblclick', () => { if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(() => {}); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape' && document.fullscreenElement) document.exitFullscreen(); });
   const ytScript = document.createElement('script');
@@ -1402,10 +1687,8 @@ window.addEventListener('load', () => {
     buildVK();
     document.getElementById('searchInput').addEventListener('click', () => document.getElementById('searchInput').select?.());
     document.getElementById('openPlayerBtn').addEventListener('click', openPlayer);
-    /* Load YouTube IFrame API for preview player */
-    const ytScript = document.createElement('script');
-    ytScript.src = 'https://www.youtube.com/iframe_api';
-    document.head.appendChild(ytScript);
+    /* Gunakan fake timer player — TIDAK ada YouTube IFrame di console */
+    initFakePreviewPlayer();
   }
 
   if (isRemote && db) {
