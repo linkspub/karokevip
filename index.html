@@ -1546,19 +1546,8 @@ function initFakePreviewPlayer() {
   function fireState(state) {
     if (state === 1) {
       isPlaying = true; updatePlayBtn();
-      clearInterval(window._previewProgTimer);
-      window._previewProgTimer = setInterval(() => {
-        const cur = previewYTPlayer.getCurrentTime();
-        const dur = previewYTPlayer.getDuration();
-        if (dur > 0) { updateProgress(cur, dur); elapsedSeconds = Math.floor(cur); }
-        const videoAge = (Date.now() - _newVideoTimestamp) / 1000;
-        if (playerWindow && !playerWindow.closed) {
-          if (videoAge > 60) try { playerWindow.postMessage({ type: 'syncPos', val: cur }, '*'); } catch(ex) {}
-          const s = playlist[currentIndex];
-          try { playerWindow.postMessage({ type: 'songInfo', title: s?.title || '', channel: s?.channel || '', cur, dur }, '*'); } catch(ex) {}
-        }
-        broadcastProgress(cur, dur);
-      }, 1000);
+      /* Progress UI diurus oleh pesan 'progress' dari Layar 2 — tidak perlu timer sendiri */
+      /* JANGAN kirim syncPos ke Layar 2 — Layar 2 adalah master, bukan fake timer */
     } else {
       isPlaying = false; updatePlayBtn();
       clearInterval(window._previewProgTimer);
